@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wheel of Fortune &mdash; 3-Reel Slot</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="game" width="1920" height="1080"></canvas>
+  <div id="lever-hit" title="Pull the handle (L)"></div>
+
+  <div id="deck">
+    <div class="led" id="led-credits"><div class="label">CREDITS</div><div class="value" id="m-credits">0</div></div>
+    <div class="led" id="led-coins"><div class="label">COINS PLAYED</div><div class="coins"><span class="dot" id="dot1"></span><span class="dot" id="dot2"></span><span class="dot" id="dot3"></span><span class="value" id="m-coins">1</span></div></div>
+    <div class="led" id="led-paid"><div class="label">WINNER PAID</div><div class="value" id="m-paid">0</div></div>
+    <button id="btn-insert" class="btn blue" title="Add 100 play credits (I)">INSERT<br>COINS</button>
+    <button id="btn-betone" class="btn yellow" title="Bet one coin (1)">BET<br>ONE</button>
+    <button id="btn-betmax" class="btn red" title="Bet max and spin (3)">BET<br>MAX</button>
+    <button id="btn-spin" class="btn green big" title="Spin (Space)">SPIN REELS</button>
+    <button id="btn-cash" class="btn blue" title="Cash out (C)">CASH<br>OUT</button>
+    <div class="side">
+      <button id="btn-help" class="btn icon" title="Help (H)">?</button>
+      <button id="btn-sound" class="btn icon" title="Mute (S)">&#128266;</button>
+      <input id="vol" type="range" min="0" max="1" step="0.01" title="Volume">
+    </div>
+  </div>
+
+  <div id="help" class="hidden"><div class="panel"><h2>WHEEL OF FORTUNE &mdash; PAYS &amp; RULES</h2><div id="help-body"></div><button id="help-close" class="btn yellow">CLOSE</button></div></div>
+
+  <div id="splash">
+    <div class="inner">
+      <img class="logo" src="assets/logo.png" alt="WHEEL OF FORTUNE" onerror="this.style.display='none'">
+      <div class="sub">CLASSIC THREE-REEL &middot; BONUS WHEEL</div>
+      <div id="splash-text">LOADING&hellip;</div>
+      <div class="bar"><div id="splash-bar"></div></div>
+      <div class="note">Unofficial fan recreation &middot; play money only &middot; sound on</div>
+    </div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/audio-wof.js"></script>
+<script src="js/reel.js"></script>
+<script src="js/wheel.js"></script>
+<script src="js/assets.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/renderer.js"></script>
+<script src="js/game.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

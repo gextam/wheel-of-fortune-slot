@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wheel of Fortune &mdash; classic three-reel slot recreation</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A photoreal recreation of the classic Wheel of Fortune three-reel slot machine with its bonus wheel, in plain HTML5 Canvas and Web Audio.">
+<meta property="og:title" content="Wheel of Fortune — three-reel slot recreation">
+<meta property="og:image" content="screenshots/hero.jpg">
+<style>
+  :root { --gold: #ffd23a; --paper: #f3e2b0; --muted: #b7a77a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: radial-gradient(ellipse at 50% 0%, #2a1f3d 0%, #07060c 60%); color: var(--paper); font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.55; }
+  a { color: var(--gold); }
+  header { text-align: center; padding: 56px 20px 24px; }
+  header img.logo { width: min(760px, 92vw); filter: drop-shadow(0 0 30px rgba(255,200,90,.35)); }
+  header p.tag { font-family: "Arial Black", Impact, sans-serif; letter-spacing: 5px; color: var(--muted); margin: 14px 0 28px; font-size: 14px; text-transform: uppercase; }
+  .cta { display: inline-block; padding: 16px 40px; border-radius: 14px; font-family: "Arial Black", Impact, sans-serif; letter-spacing: 2px; color: #1a1200; text-decoration: none;
+    background: linear-gradient(180deg, #fff3b0, #f3c400 40%, #b58900); box-shadow: 0 6px 0 #3a2a00, 0 14px 30px rgba(0,0,0,.6); }
+  .hero { display: block; width: min(1200px, 94vw); margin: 40px auto 0; border-radius: 14px; border: 2px solid #4a3b14; box-shadow: 0 30px 80px rgba(0,0,0,.8); }
+  main { max-width: 1200px; margin: 0 auto; padding: 40px 20px 80px; }
+  h2 { font-family: "Arial Black", Impact, sans-serif; color: var(--gold); letter-spacing: 3px; font-size: 24px; margin: 56px 0 18px; border-bottom: 1px solid #3a3012; padding-bottom: 10px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+  .card { background: rgba(255,255,255,.03); border: 1px solid #3a3012; border-radius: 12px; padding: 18px 20px; }
+  .card h3 { margin: 0 0 8px; color: #ffe9a8; font-size: 17px; }
+  .card p { margin: 0; color: #d9ccaa; font-size: 15px; }
+  .shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 22px; }
+  figure { margin: 0; } figure img { width: 100%; border-radius: 10px; border: 1px solid #3a3012; box-shadow: 0 12px 30px rgba(0,0,0,.6); }
+  figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; } td, th { border-bottom: 1px solid #2a2410; padding: 8px 10px; text-align: left; } th { color: var(--gold); }
+  footer { text-align: center; color: #7d6a3a; font-size: 13px; padding: 30px 20px 60px; }
+  code { background: #15131c; padding: 2px 6px; border-radius: 4px; color: #ffe9a8; }
+</style>
+</head>
+<body>
+<header>
+  <img class="logo" src="../assets/logo.png" alt="WHEEL OF FORTUNE">
+  <p class="tag">Classic three-reel stepper &middot; bonus wheel &middot; progressive jackpot</p>
+  <a class="cta" href="../index.html">PLAY IN YOUR BROWSER</a>
+  <img class="hero" src="screenshots/hero.jpg" alt="The cabinet: bonus wheel, pay glass, three reels and the handle">
+</header>
+<main>
+  <h2>What it is</h2>
+  <p>An unofficial, play-money recreation of the classic three-reel <em>Wheel of Fortune</em> slot machine with the big bonus wheel
+    on top. Plain HTML5 Canvas, Web Audio and vanilla JavaScript &mdash; no frameworks, no build, runs from any static host or straight
+    from disk. The reels are weighted virtual-stop steppers exactly like the real machines, so blanks tease near-misses, and the
+    whole par sheet (hit frequency, wheel odds, return) is computed exactly by the bundled tool.</p>
+  <h2>Features</h2>
+  <div class="grid">
+    <div class="card"><h3>Mechanical steppers</h3><p>Three 22-stop reels with blanks, weighted stops, stepper-motor whir, mechanical clunks, rising stop tones and a quick spring bounce onto the payline.</p></div>
+    <div class="card"><h3>The wheel</h3><p>22 weighted wedges from 25 to 1,000 credits. SPIN on the third reel with three coins lights the cabinet, the crowd chants, and a constant-deceleration spin with a clicking flapper lands exactly on the predetermined wedge.</p></div>
+    <div class="card"><h3>Coins, credits, jackpot</h3><p>Bet one, bet max, pull the handle, cash out to the hopper. Three logos on three coins win a progressive jackpot that grows with every bet.</p></div>
+    <div class="card"><h3>Cabinet optics</h3><p>Casino-floor backdrop, glossy cabinet with chasing lights, pay glass and bonus rules, LED meters, chrome trims, a lever that actually pulls.</p></div>
+    <div class="card"><h3>Full sound</h3><p>All effects synthesized live in Web Audio; the chant is a generated voice layered into a crowd.</p></div>
+    <div class="card"><h3>Verified odds</h3><p><code>node tools/rtp-sim.js</code> prints the exact par sheet: pay frequencies, wheel average, return for 1, 2 and 3 coins.</p></div>
+  </div>
+  <h2>Screenshots</h2>
+  <div class="shots">
+    <figure><img src="screenshots/base.jpg" alt="Base game"><figcaption>Ready to play with one coin in.</figcaption></figure>
+    <figure><img src="screenshots/spin.jpg" alt="Reels spinning"><figcaption>Stepper reels at speed.</figcaption></figure>
+    <figure><img src="screenshots/win.jpg" alt="Three sevens"><figcaption>Three red sevens on three coins: 600, counted up credit by credit.</figcaption></figure>
+    <figure><img src="screenshots/bonus.jpg" alt="Spin symbol landed"><figcaption>SPIN on the third reel with max coins: the wheel is armed.</figcaption></figure>
+    <figure><img src="screenshots/wheel.jpg" alt="Wheel spinning"><figcaption>The wheel spins; the flapper clicks over every peg.</figcaption></figure>
+    <figure><img src="screenshots/wheelwin.jpg" alt="Wheel award"><figcaption>Landing on 1,000.</figcaption></figure>
+    <figure><img src="screenshots/jackpot.jpg" alt="Jackpot"><figcaption>Three logos on three coins: the progressive jackpot.</figcaption></figure>
+    <figure><img src="screenshots/help.jpg" alt="Help"><figcaption>Pays and rules.</figcaption></figure>
+  </div>
+  <h2>Controls</h2>
+  <table>
+    <tr><th>Action</th><th>Mouse</th><th>Keyboard</th></tr>
+    <tr><td>Spin reels / spin wheel / take win</td><td>SPIN REELS or pull the handle</td><td><code>Space</code>, <code>L</code> for the handle</td></tr>
+    <tr><td>Bet one coin</td><td>BET ONE</td><td><code>1</code></td></tr>
+    <tr><td>Bet max and spin</td><td>BET MAX</td><td><code>3</code> or <code>M</code></td></tr>
+    <tr><td>Add 100 play credits</td><td>INSERT COINS</td><td><code>I</code></td></tr>
+    <tr><td>Cash out</td><td>CASH OUT</td><td><code>C</code></td></tr>
+    <tr><td>Help / mute</td><td>? / speaker</td><td><code>H</code> / <code>S</code></td></tr>
+  </table>
+  <h2>Run it yourself</h2>
+  <p>Open <code>index.html</code>, or serve the folder (<code>python -m http.server 8766</code> or <code>start.cmd</code> on Windows). The README covers the configuration, the par-sheet tool and the screenshot script.</p>
+</main>
+<footer>Unofficial fan recreation for entertainment only &middot; play money, no real wagering &middot; Wheel of Fortune is a trademark of its owners &middot; artwork and voice generated for this project, all other sound synthesized at runtime.</footer>
+</body>
+</html>
