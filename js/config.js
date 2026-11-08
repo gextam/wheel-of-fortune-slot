@@ -12,6 +12,19 @@
   'use strict';
   const WOF = root.WOF || (root.WOF = {});
 
+  /* Two maths profiles share the reels, pays and wheel values; they differ in how often SPIN lands
+     and how the wheel is weighted:
+       classic  SPIN about 1 in 115 spins, wheel average 54 credits, 92.5% three-coin return
+       arcade   (default) SPIN about 1 in 58 spins, a flatter wheel (average about 38 credits,
+                1,000 about 1 in 510 wheel spins), 97.9% three-coin return
+     Pick classic with ?classic=1 in the browser, or WOF_PROFILE=classic for the node tools. */
+  const PROFILES = {
+    classic: { spinWeight: 1, wheelWeights: null, rtp: '92.5', spinEvery: 115 },
+    arcade: { spinWeight: 2, wheelWeights: [2, 560, 1, 160, 1, 90, 1, 64, 3, 48, 1, 30, 2, 24, 1, 8, 2, 6, 3, 5, 4, 4], rtp: '97.9', spinEvery: 58 }
+  };
+  const wantClassic = (root.location && /[?&]classic=1(&|$)/.test(root.location.search)) || (typeof process !== 'undefined' && process.env && process.env.WOF_PROFILE === 'classic');
+  const PROFILE = wantClassic ? 'classic' : 'arcade', PROF = PROFILES[PROFILE];
+
   const SYMBOLS = [
     { id: 'WOF',   name: 'Wheel of Fortune', file: 'wof',   wild: true },
     { id: 'SEVEN', name: 'Red Seven',        file: 'seven' },
@@ -42,7 +55,7 @@
   ];
   /* virtual-stop weights per symbol; BLANK_NEAR_WOF applies to the two blanks
      beside the WOF logo (the near-miss tease). Tuned with tools/tune.js. */
-  const WEIGHTS = { WOF: 2, SEVEN: 4, BAR3: 3, BAR2: 5, BAR1: 7, SPIN: 1, BLANK: 5, BLANK_NEAR_WOF: 12 };
+  const WEIGHTS = { WOF: 2, SEVEN: 4, BAR3: 3, BAR2: 5, BAR1: 7, SPIN: PROF.spinWeight, BLANK: 5, BLANK_NEAR_WOF: 12 };
 
   function buildStrips(weights) {
     weights = weights || WEIGHTS;
@@ -54,8 +67,8 @@
     }));
   }
 
-  /* bonus wheel: 22 wedges clockwise from the pointer; weights tuned so the
-     average award is ~54 credits and 1000 hits about 1 in 250 spins */
+  /* bonus wheel: 22 wedges clockwise from the pointer. These are the classic weights (average
+     award ~54 credits, 1000 about 1 in 250 wheel spins); the arcade profile replaces them below. */
   const WHEEL = [
     { value: 1000, weight: 1, color: '#ffd23a' }, { value: 25, weight: 70, color: '#e8312f' }, { value: 200, weight: 1, color: '#2f6fe8' },
     { value: 35, weight: 45, color: '#36b36b' }, { value: 300, weight: 1, color: '#f28c1f' }, { value: 40, weight: 30, color: '#8b3fd9' },
@@ -66,6 +79,7 @@
     { value: 90, weight: 3, color: '#ff5fa2' }, { value: 75, weight: 5, color: '#e8312f' }, { value: 80, weight: 4, color: '#2f6fe8' },
     { value: 85, weight: 4, color: '#36b36b' }
   ];
+  if (PROF.wheelWeights) WHEEL.forEach((w, i) => { w.weight = PROF.wheelWeights[i]; });
 
   /* ---------- evaluation ---------- */
   function isBar(id) { return !!(BY_ID[id] && BY_ID[id].bar); }
@@ -108,7 +122,7 @@
       'Only the highest winning combination is paid. Malfunction voids all pays and plays.'
     ]
   };
-  WOF.RTP = '92.5';
+  WOF.RTP = PROF.rtp; WOF.PROFILE = PROFILE; WOF.PROFILES = PROFILES;
   WOF.buildStrips = buildStrips;
   WOF.evalLine = evalLine;
   WOF.payFor = payFor;

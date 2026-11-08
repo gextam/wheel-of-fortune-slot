@@ -8,9 +8,11 @@
   'use strict';
   const WOF = root.WOF, ZEUS = root.ZEUS, A = WOF.assets, FX = ZEUS.fx, C = WOF.CONFIG;
   const W = 1920, H = 1080, TAU = Math.PI * 2;
-  const CAB = { x: 400, w: 1120 };
-  const WHEEL = { cx: 960, cy: 298, r: 220 };
-  const REEL = { x: 612, y: 606, cellW: 232, cellH: 88, cols: 3, rows: 3 };
+  /* Big stepper reels (400 x 158 cells in a 1200 x 474 window, about three times the glass
+     area of the first layout) under a compact top box that holds the wheel and both panels. */
+  const CAB = { x: 300, w: 1320 };
+  const WHEEL = { cx: 960, cy: 206, r: 150 };
+  const REEL = { x: 360, y: 504, cellW: 400, cellH: 158, cols: 3, rows: 3 };
   REEL.w = REEL.cellW * REEL.cols; REEL.h = REEL.cellH * REEL.rows; REEL.cy = REEL.y + REEL.h / 2;
   const PAD = 18, R_CELLS = 3.2;
   const FONT = '"Arial Black", Impact, "Segoe UI", Arial, sans-serif';
@@ -85,16 +87,16 @@
     /* top box backdrop behind the wheel */
     g = ctx.createRadialGradient(WHEEL.cx, WHEEL.cy, 60, WHEEL.cx, WHEEL.cy, 620);
     g.addColorStop(0, '#2b2746'); g.addColorStop(0.55, '#14121f'); g.addColorStop(1, '#0c0b12');
-    ctx.fillStyle = g; rr(ctx, x + 14, 6, w - 28, 538, 24); ctx.fill();
+    ctx.fillStyle = g; rr(ctx, x + 14, 6, w - 28, 402, 24); ctx.fill();
     /* chrome trims */
     const trim = (yy, hh) => { const t = ctx.createLinearGradient(0, yy, 0, yy + hh); t.addColorStop(0, '#f4f4f8'); t.addColorStop(0.5, '#8d8f99'); t.addColorStop(1, '#2d2e36'); ctx.fillStyle = t; ctx.fillRect(x + 14, yy, w - 28, hh); };
-    trim(544, 6); trim(596, 4); trim(896, 5);
+    trim(410, 5); trim(474, 4);
     /* chase lights around the top box */
-    this.drawChaseLights(ctx, x + 22, 14, w - 44, 522, now);
+    this.drawChaseLights(ctx, x + 22, 14, w - 44, 384, now);
     /* side light strips of the reel section */
     [x + 24, x + w - 36].forEach(sx => {
       const sg = ctx.createLinearGradient(sx, 0, sx + 12, 0); sg.addColorStop(0, '#5a4a1a'); sg.addColorStop(0.5, '#ffe9a8'); sg.addColorStop(1, '#5a4a1a');
-      ctx.globalAlpha = 0.5 + 0.3 * Math.sin(now * 2 + sx); ctx.fillStyle = sg; ctx.fillRect(sx, 612, 12, 270); ctx.globalAlpha = 1;
+      ctx.globalAlpha = 0.5 + 0.3 * Math.sin(now * 2 + sx); ctx.fillStyle = sg; ctx.fillRect(sx, 520, 12, 440); ctx.globalAlpha = 1;
     });
   };
   P.drawChaseLights = function (ctx, x, y, w, h, now) {
@@ -129,38 +131,38 @@
   P.drawTopGlass = function (ctx) {
     const g = this.game;
     /* left: paytable */
-    let x = CAB.x + 30, y = 70, w = 236, h = 460;
+    let x = CAB.x + 30, y = 26, w = 380, h = 374;
     this.panel(ctx, x, y, w, h);
     ctx.save(); ctx.textBaseline = 'middle';
     ctx.font = '900 22px ' + FONT; ctx.fillStyle = '#ffd23a'; ctx.textAlign = 'center'; ctx.shadowColor = 'rgba(255,200,60,0.6)'; ctx.shadowBlur = 10; ctx.fillText('PAYS', x + w / 2, y + 26); ctx.shadowBlur = 0;
-    const colX = i => x + 54 + i * 66;
-    [1, 2, 3].forEach((cn, i) => { ctx.fillStyle = cn === g.coins ? '#ffffff' : '#8f8468'; ctx.textAlign = 'center'; ctx.font = '700 10px ' + FONT; ctx.fillText(cn + (cn > 1 ? ' COINS' : ' COIN'), colX(i), y + 52); });
+    const colX = i => x + 110 + i * 110;
+    [1, 2, 3].forEach((cn, i) => { ctx.fillStyle = cn === g.coins ? '#ffffff' : '#8f8468'; ctx.textAlign = 'center'; ctx.font = '700 12px ' + FONT; ctx.fillText(cn + (cn > 1 ? ' COINS' : ' COIN'), colX(i), y + 52); });
     C.pays.forEach((p, row) => {
-      const yy = y + 86 + row * 60;
-      ctx.textAlign = 'left'; ctx.font = '700 12px ' + FONT; ctx.fillStyle = '#e9dcc0'; ctx.fillText(p.label.toUpperCase(), x + 14, yy - 12, 210);
+      const yy = y + 84 + row * 46;
+      ctx.textAlign = 'left'; ctx.font = '700 14px ' + FONT; ctx.fillStyle = '#e9dcc0'; ctx.fillText(p.label.toUpperCase(), x + 14, yy - 12, 350);
       [0, 1, 2].forEach(i => {
         const v = p.pays[i]; const col = (i + 1) === g.coins, jp = v === 'JACKPOT';
-        ctx.textAlign = 'center'; ctx.font = (col ? (jp ? '900 12px ' : '900 17px ') : (jp ? '700 11px ' : '700 15px ')) + FONT;
+        ctx.textAlign = 'center'; ctx.font = (col ? (jp ? '900 13px ' : '900 20px ') : (jp ? '700 12px ' : '700 17px ')) + FONT;
         ctx.fillStyle = jp ? (col ? '#ff4d4d' : '#8a3030') : (col ? '#ffffff' : '#8f8468');
         ctx.fillText(jp ? 'JACKPOT' : String(v), colX(i), yy + 12);
       });
     });
-    ctx.textAlign = 'center'; ctx.font = '700 11px ' + FONT; ctx.fillStyle = '#c9b98d';
+    ctx.textAlign = 'center'; ctx.font = '700 12px ' + FONT; ctx.fillStyle = '#c9b98d';
     ctx.fillText('WHEEL OF FORTUNE SYMBOL IS WILD', x + w / 2, y + h - 18);
     ctx.restore();
     /* right: wheel bonus */
-    x = CAB.x + CAB.w - 30 - 236;
+    x = CAB.x + CAB.w - 30 - 380;
     this.panel(ctx, x, y, w, h);
     ctx.save(); ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
     ctx.font = '900 22px ' + FONT; ctx.fillStyle = '#ffd23a'; ctx.shadowColor = 'rgba(255,200,60,0.6)'; ctx.shadowBlur = 10; ctx.fillText('WHEEL BONUS', x + w / 2, y + 26); ctx.shadowBlur = 0;
-    ctx.font = '700 12px ' + FONT; ctx.fillStyle = '#e9dcc0';
-    ['SPIN SYMBOL ON 3RD REEL', 'WITH 3 COINS PLAYED', 'SPINS THE WHEEL'].forEach((t, i) => ctx.fillText(t, x + w / 2, y + 56 + i * 18));
-    ctx.font = '900 15px ' + FONT; ctx.fillStyle = '#ffffff'; ctx.fillText('WIN 25 TO 1,000 CREDITS', x + w / 2, y + 122);
+    ctx.font = '700 14px ' + FONT; ctx.fillStyle = '#e9dcc0';
+    ['SPIN SYMBOL ON 3RD REEL', 'WITH 3 COINS PLAYED', 'SPINS THE WHEEL'].forEach((t, i) => ctx.fillText(t, x + w / 2, y + 54 + i * 20));
+    ctx.font = '900 17px ' + FONT; ctx.fillStyle = '#ffffff'; ctx.fillText('WIN 25 TO 1,000 CREDITS', x + w / 2, y + 124);
     const vals = C.wheel.slice().sort((a, b) => b.value - a.value);
     vals.forEach((wd, i) => {
-      const cx = x + 36 + (i % 4) * 54, cy = y + 160 + Math.floor(i / 4) * 44;
-      ctx.fillStyle = wd.color; rr(ctx, cx - 22, cy - 15, 44, 30, 6); ctx.fill();
-      ctx.fillStyle = wd.value >= 100 ? '#1a1200' : '#ffffff'; ctx.font = '900 ' + (wd.value >= 1000 ? 13 : 14) + 'px ' + FONT; ctx.fillText(String(wd.value), cx, cy + 1);
+      const cx = x + 50 + (i % 5) * 70, cy = y + 164 + Math.floor(i / 5) * 36;
+      ctx.fillStyle = wd.color; rr(ctx, cx - 30, cy - 15, 60, 30, 6); ctx.fill();
+      ctx.fillStyle = wd.value >= 100 ? '#1a1200' : '#ffffff'; ctx.font = '900 ' + (wd.value >= 1000 ? 14 : 15) + 'px ' + FONT; ctx.fillText(String(wd.value), cx, cy + 1);
     });
     ctx.font = '700 11px ' + FONT; ctx.fillStyle = '#c9b98d'; ctx.fillText('PLAY MAX COINS FOR THE WHEEL', x + w / 2, y + h - 18);
     ctx.restore();
@@ -242,17 +244,17 @@
     ctx.restore();
     /* bonus banners */
     const gm = this.game;
-    if (gm.state === 'bonusReady') this.goldText(ctx, 'SPIN THE WHEEL!', cx, cy + R + 60, 34, { glow: 14 + 10 * Math.sin(now * 6) });
-    if (gm.state === 'wheelPaying' || (gm.state === 'idle' && gm.wheel.lightMode === 'win' && gm.bonusValue)) this.goldText(ctx, '+ ' + fmt(gm.bonusValue), cx, cy + R + 60, 36, { glow: 20, fill: '#ffffff' });
+    if (gm.state === 'bonusReady') this.goldText(ctx, 'SPIN THE WHEEL!', cx, cy + R + 34, 26, { glow: 14 + 10 * Math.sin(now * 6) });
+    if (gm.state === 'wheelPaying' || (gm.state === 'idle' && gm.wheel.lightMode === 'win' && gm.bonusValue)) this.goldText(ctx, '+ ' + fmt(gm.bonusValue), cx, cy + R + 34, 28, { glow: 20, fill: '#ffffff' });
   };
 
   /* ------------------------------------------------------- meters/reels */
   P.drawJackpotBand = function (ctx, now) {
-    const x = REEL.x - PAD - 46, w = REEL.w + 2 * PAD + 92, y = 556, h = 36;
+    const x = REEL.x - PAD, w = REEL.w + 2 * PAD, y = 420, h = 30;
     ctx.save(); ctx.fillStyle = '#06060a'; rr(ctx, x, y, w, h, 8); ctx.fill();
     ctx.lineWidth = 2; ctx.strokeStyle = '#6a5a2a'; rr(ctx, x, y, w, h, 8); ctx.stroke();
-    ctx.font = '900 16px ' + FONT; ctx.fillStyle = '#ffd23a'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillText('PROGRESSIVE JACKPOT', x + 18, y + h / 2 + 1);
-    ctx.font = '700 28px ' + LED; ctx.textAlign = 'right'; ctx.fillStyle = '#ff2a2a'; ctx.shadowColor = 'rgba(255,60,60,0.9)'; ctx.shadowBlur = 12 + 4 * Math.sin(now * 3);
+    ctx.font = '900 15px ' + FONT; ctx.fillStyle = '#ffd23a'; ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillText('PROGRESSIVE JACKPOT', x + 18, y + h / 2 + 1);
+    ctx.font = '700 24px ' + LED; ctx.textAlign = 'right'; ctx.fillStyle = '#ff2a2a'; ctx.shadowColor = 'rgba(255,60,60,0.9)'; ctx.shadowBlur = 12 + 4 * Math.sin(now * 3);
     ctx.fillText(fmt(Math.floor(this.game.jackpot)), x + w - 18, y + h / 2 + 1); ctx.restore();
   };
   P.drawReelWindow = function (ctx, now) {
@@ -338,7 +340,7 @@
     ctx.save(); ctx.font = '900 22px ' + FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.shadowColor = 'rgba(0,0,0,0.9)'; ctx.shadowBlur = 8;
     ctx.fillStyle = g.state === 'bonusReady' ? (Math.sin(now * 8) > 0 ? '#ffd23a' : '#ffffff') : '#ffe9a8';
-    ctx.fillText(g.message || '', CAB.x + CAB.w / 2, 886); ctx.restore();
+    ctx.fillText(g.message || '', CAB.x + CAB.w / 2, 471); ctx.restore();
   };
   P.drawOverlay = function (ctx, now) {
     const ov = this.game.overlay; if (!ov) return;

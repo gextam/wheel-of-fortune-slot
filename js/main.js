@@ -33,7 +33,7 @@
     ['chant1', 'chant2', 'chant3'].forEach(n => WOF.audio.preloadClip(n, 'assets/audio/' + n + '.mp3'));
 
     WOF.assets.load(p => ui.setProgress(p)).then(() => {
-      WOF.assets.prepareSymbols(464, 176);
+      WOF.assets.prepareSymbols(800, 316);
       ui.buildHelp(); ui.assetsLoaded();
     });
 

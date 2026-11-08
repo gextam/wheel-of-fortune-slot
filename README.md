@@ -7,7 +7,7 @@
 ![HTML5 Canvas](https://img.shields.io/badge/HTML5-Canvas-e34f26)
 ![Web Audio](https://img.shields.io/badge/Web%20Audio-synthesized-7b61ff)
 ![Dependencies](https://img.shields.io/badge/dependencies-none-success)
-![RTP](https://img.shields.io/badge/return%20(3%20coins)-92.5%25-d4af37)
+![RTP](https://img.shields.io/badge/return%20(3%20coins)-97.9%25-d4af37)
 ![Play money](https://img.shields.io/badge/play%20money-only-blue)
 
 <img src="docs/screenshots/hero.jpg" alt="The cabinet: bonus wheel, pay glass, three stepper reels and the handle" width="900">
@@ -58,13 +58,17 @@ weighted too, and the bundled tool prints the exact par sheet.
 
 | Figure | Value |
 | --- | --- |
-| Virtual stops per reel | 121 / 121 / 115 |
+| Virtual stops per reel | 121 / 121 / 116 (classic profile 115) |
 | Any pay | 1 in 23 spins |
-| SPIN on the payline (wheel) | 1 in 115 spins |
+| SPIN on the payline (wheel) | 1 in 58 spins (classic 1 in 115) |
+| Wheel average award | 37.6 credits, the 1,000 about 1 in 510 wheel spins (classic 53.6 and 1 in 252) |
 | Three red sevens | 1 in 1,700 |
 | Three logos (jackpot) | 1 in 210,000 |
-| Return, 1 or 2 coins | 76.7 % |
-| Return, 3 coins | 77.0 % base + 15.5 % wheel = **92.5 %** |
+| Return, 1 or 2 coins | 76.3 % (classic 76.7 %) |
+| Return, 3 coins | 76.3 % base + 21.6 % wheel = **97.9 %** (classic 77.0 % + 15.5 % = 92.5 %) |
+
+The default *arcade* profile spins the wheel about twice as often on a flatter wheel; `?classic=1`
+in the address bar (or `WOF_PROFILE=classic` for the tools) restores the original balance.
 
 **Physics and presentation**
 
@@ -128,7 +132,8 @@ for the optional tools.
 | `jackpotBase`, `jackpotRate` | `js/config.js` | `5000`, `0.03` | Progressive reset value and growth per credit bet |
 | `PAYS[].pays` | `js/config.js` | classic table | Total award for 1 / 2 / 3 coins per combination |
 | `LAYOUT` | `js/config.js` | 22 stops per reel | Physical symbol order on each reel |
-| `WEIGHTS` | `js/config.js` | tuned to 92.5 % | Virtual stops per symbol; `BLANK_NEAR_WOF` is the near-miss weight |
+| `PROFILES` | `js/config.js` | `arcade`; `?classic=1` switches | SPIN weight and wheel weights: arcade spins the wheel 1 in 58 (average 38 credits), classic 1 in 115 (average 54) |
+| `WEIGHTS` | `js/config.js` | tuned to 97.9 % (classic 92.5 %) | Virtual stops per symbol; `BLANK_NEAR_WOF` is the near-miss weight |
 | `WHEEL[].value`, `.weight`, `.color` | `js/config.js` | 22 wedges | Wheel values, odds and colours |
 | reel physics (`vmax`, `accelTime`, `overshoot`, `omega`, `zeta`) | `js/game.js` | `34`, `0.22`, `0.1`, `30`, `0.55` | Stepper speed, acceleration, bounce |
 | `spinTo` duration / turns | `js/wheel.js` | 6.4–7.6 s, 5–7 turns | Wheel spin feel |
@@ -213,8 +218,9 @@ Press **?** (or `H`) for the pay table, the rules and the wheel values.
 
 * The original machine's par sheet is proprietary; the weights here reproduce
   the published behaviour (a weighted 22-wedge wheel of 25–1,000 triggered by
-  SPIN on reel 3 at max coins, near-miss blanks) with a 92.5 % three-coin return
-  chosen to match classic quarter steppers, not the exact IGT figures.
+  SPIN on reel 3 at max coins, near-miss blanks). The classic profile's 92.5 % three-coin
+  return was chosen to match quarter steppers, not the exact IGT figures; the default arcade
+  profile trades a flatter wheel for twice as many wheel spins at 97.9 %.
 * The logo reel symbol uses the generated title logo because the image model
   refused the square reel-symbol render of the words.
 * Credits are play money and are not saved between visits.
@@ -256,6 +262,7 @@ wheel-of-fortune-slot/
     ├── rtp-sim.js        exact par sheet (pay frequencies, wheel, return per coins)
     ├── rtp-lib.js        shared maths
     ├── tune.js           weight scans used to hit the target return
+    ├── tune-arcade.js    SPIN-weight and wheel-weight scans behind the arcade profile
     ├── screenshots.mjs   headless-Chrome smoke test + screenshots (no dependencies)
     └── pngalpha.py       alpha-channel report for PNG assets
 ```

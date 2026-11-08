@@ -174,7 +174,7 @@
       if (this.coins === C.maxCoins) {
         this.state = 'bonusReady'; A().chant(); this.wheel.lightMode = 'chase';
         this.winCells = [2]; this.setMessage('SPIN THE WHEEL!  ·  PRESS SPIN OR PULL THE HANDLE');
-        FX.sparkle(960, 300, 30, { color: '#ffffff', speed: 400 });
+        FX.sparkle(WOF.LAYOUT.WHEEL.cx, WOF.LAYOUT.WHEEL.cy, 30, { color: "#ffffff", speed: 400 });
         return;
       }
       this.setMessage('PLAY 3 COINS TO SPIN THE WHEEL');
@@ -204,7 +204,7 @@
     this.state = 'wheelPaying'; this.paid = value; this.paidDisplay = 0;
     this.rollup = { t0: this.now + 0.6, dur: clamp(value * 0.03, 0.8, 6), to: value, creditsBase: this.credits };
     this.setMessage('THE WHEEL AWARDS ' + value + ' CREDITS');
-    FX.sparkle(960, 300 - 225, 24, { color: '#ffe27a', speed: 300 });
+    FX.sparkle(WOF.LAYOUT.WHEEL.cx, WOF.LAYOUT.WHEEL.cy - WOF.LAYOUT.WHEEL.r - 10, 24, { color: "#ffe27a", speed: 300 });
     if (value >= 300) FX.coins(Math.min(60, value / 10));
   };
   P.endOverlay = function () { const ov = this.overlay; if (!ov || ov.ending) return; ov.ending = true; ov.endAt = this.now; if (this.rollup) this.finishRollup(); };
